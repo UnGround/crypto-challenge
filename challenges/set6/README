@@ -1,0 +1,9 @@
+Crypto Challenge Set 6
+
+This is the last of our original crypto challenges.
+
+This set exclusively covers number-theoretic cryptography, and, in particular, RSA and DSA.
+
+This set is hard. The concepts are again new. The attacks involve some math --- but nothing you didn't learn in 9th grade --- and a significant amount of programming.
+
+But they're worth it. Two of these attacks in particular are among the most valuable in real-world cryptography. 
