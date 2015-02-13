@@ -22,7 +22,7 @@ def hex_to_binary(hex_string):
 def binary_to_hex(binary_string):
     if not is_binary(binary_string):
         raise TypeError("Error: Requires binary string input")
-    return ''.join(hex_table[int(binary_string[b:b+byte_len],2)] for b in range(0,len(binary_string), byte_len))
+    return ''.join(hex_table[int(binary_string[b-byte_len if b-byte_len > 0 else 0:b],2)] for b in range(len(binary_string), 0, -byte_len))[::-1]
 
 def base64_to_binary(b64_string):
     return ''.join(bin(base64_table.index(b))[2:].zfill(b64_step) for b in b64_string)
@@ -38,3 +38,11 @@ def base64_to_hex(base64):
     if type(base64) != str:
         raise TypeError("Error: base64_to_hex requires input in str")
     return binary_to_hex(base64_to_binary(base64))
+
+def xor(a, b):
+    a = hex_to_binary(a)
+    a = int(a, 2)
+    b = hex_to_binary(b)
+    b = int(b, 2)
+    c = bin(a ^ b)[2:]
+    return binary_to_hex(c)

@@ -51,6 +51,12 @@ class TestEncodings(unittest.TestCase):
         self.assertEqual(encode.binary_to_hex('0100'), '4')
         self.assertEqual(encode.binary_to_hex('1101'), 'D')
         self.assertEqual(encode.binary_to_hex('010011010110000101101110'), '4D616E')
+        self.assertEqual(encode.binary_to_hex('111111'), '3F') #can it handle dropped leading 0's?
+        self.assertEqual(encode.binary_to_hex('100'), '4') #how about less than 4 bits?
+
+    def test_xor(self):
+        self.assertEqual(encode.xor('F0','0F'),'FF')
+        self.assertEqual(encode.xor('1c0111001f010100061a024b53535009181c', '686974207468652062756c6c277320657965').lower(), '746865206b696420646f6e277420706c6179')
 
 if __name__ == '__main__':
     unittest.main()
