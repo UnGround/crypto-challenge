@@ -8,6 +8,8 @@ b64_step=6
 
 def is_hex(hex_string):
     hex_regexp = '[0-9A-Fa-f]+$'
+    if type(hex_string) is not str:
+        return False
     return re.match(hex_regexp, hex_string) is not None
 
 def is_binary(binary_string):
@@ -40,9 +42,7 @@ def base64_to_hex(base64):
     return binary_to_hex(base64_to_binary(base64))
 
 def xor(a, b):
-    a = hex_to_binary(a)
-    a = int(a, 2)
-    b = hex_to_binary(b)
-    b = int(b, 2)
+    a = int(hex_to_binary(a), 2)
+    b = int(hex_to_binary(b), 2)
     c = bin(a ^ b)[2:]
     return binary_to_hex(c)
