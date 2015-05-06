@@ -96,3 +96,19 @@ def search_single_byte_xor_key(message):
             pass
 
     return None if d == {} else d[min(d)]
+
+def decrypt_repeating_key_xor(cyphertext, key):
+    """Decrypts the cyphertext using the given key, using repeating xor cypher
+    Assumes the cyphertext is already hex"""
+    text = ""
+    keycode = encode.repeating_key_loop(key)
+    loc=0
+    while loc < len(cyphertext):
+        b = cyphertext[loc:loc+2]
+        keybyte = next(keycode)
+        htext = encode.xor(b, keybyte)
+        if len(htext) < 2:  #ensure leading '0' if only a single digit returned
+            htext = "0" + htext
+        text += htext
+        loc += 2
+    return binascii.unhexlify(text)

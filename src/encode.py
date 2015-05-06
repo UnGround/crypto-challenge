@@ -1,5 +1,6 @@
 ''' File containing various crypto encoding and decoding functions'''
 import re
+import binascii
 
 base64_table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 hex_table = '0123456789ABCDEF'
@@ -46,3 +47,31 @@ def xor(a, b):
     b = int(hex_to_binary(b), 2)
     c = bin(a ^ b)[2:]
     return binary_to_hex(c)
+
+def get_next_hex(data):
+    """generates next hex byte of information from data."""
+    loc = 0
+    while loc < len(data):
+        h = str(binascii.hexlify(bytes(data[loc], 'UTF8')))[2:-1]
+        yield h
+        loc += 1
+
+def repeating_key_loop(key):
+    """generates the next byte of key information for repeating key XOR."""
+    loc = 0
+    while(True):
+        h = str(binascii.hexlify(bytes(key[loc], 'UTF8')))[2:-1]
+        yield h
+        loc = (loc + 1) % len(key)
+
+def encrypt_repeating_key_xor(data, key):
+    """Implementation of repeating key xor. (ex 1.5)."""
+    message = ""
+    keygen = repeating_key_loop(key)
+    for b in get_next_hex(data):
+        keybit = next(keygen)
+        enc = xor(b, keybit)
+        if(len(enc) < 2):   #ensure leading 0's are added to the byte if required
+            enc = '0' + enc
+        message += enc
+    return message

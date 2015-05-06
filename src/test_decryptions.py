@@ -31,6 +31,14 @@ class TestDecrypt(unittest.TestCase):
         self.assertEqual(decryptor.search_single_byte_xor_key('1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'), "Cooking MC's like a pound of bacon")
         self.assertEqual(decryptor.search_single_byte_xor_key('0e3647e8592d35514a081243582536ed3de6734059001e3f535ce6271032'), None)
 
+    def test_decrypt_repeating_key_xor(self):
+        cyphertext="0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272\
+a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
+        key = "ICE"
+        text = b"""Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal"""
+        self.assertEqual(decryptor.decrypt_repeating_key_xor(cyphertext, key), text)
+
 
 if __name__ == "__main__":
     unittest.main()
