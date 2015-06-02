@@ -19,6 +19,8 @@ def is_hex(hex_string):
 
 def is_binary(binary_string):
     binary_regexp = '[0-1]+$'
+    if type(binary_string) is bytes:
+        binary_string = str(binary_string)[2:-1]
     return re.match(binary_regexp, binary_string) is not None
 
 
@@ -50,7 +52,7 @@ def get_next_hex(data):
         loc += 1
 
 
-def toBinary(s, is_hex=False):
+def toBinary(s):
     """convert string s to a binary string representation.
     For instance, passing the character 'a' will return
     '01100001'
@@ -58,7 +60,7 @@ def toBinary(s, is_hex=False):
     If isHex is set to True, this treats the data as a 
     hex string instead of ascii.
     """
-    if is_hex:
+    if is_hex(s):
         return ''.join(bin(int(h, 16))[2:].zfill(4) for h in s)
     else:
         return ''.join(format(ord(c), 'b').zfill(8) for c in s)
@@ -67,21 +69,23 @@ def toBinary(s, is_hex=False):
 def toHex(s):
     """convert string s to a hex string representation
     """
+    if is_binary(s):
+        return binary_to_hex(s)
+    
     if type(s) is not bytes:
         s = bytes(s, 'UTF8')
 
     return str(binascii.hexlify(s))[2:-1]
 
 
-def hamming_distance(s1, s2, is_hex=False):
+def hamming_distance(s1, s2):
     """calculates the hamming distance between two strings.
     The hamming distance is defined as the number of differing
     bits.
-
-    set is_hex to true if the strings are in a hex format. By
-    default, strings are treated as ascii.
     """
-    diff = xor(toBinary(s1, is_hex), toBinary(s2, is_hex))
+    if len(s1) != len(s2):
+        raise ValueError("Error: hamming distance is undefined for strings of unequal length")
+    diff = xor(toBinary(s1), toBinary(s2))
     hamming_distance = 0
     for c in diff:
         hamming_distance += int(c)

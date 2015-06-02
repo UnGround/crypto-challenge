@@ -37,7 +37,7 @@ def hex_to_base64(hex_string):
 
 
 def base64_to_hex(b64):
-    if type(b64) != str and type(hex_string) != bytes:
+    if type(b64) != str and type(b64) != bytes:
         raise TypeError("Error: base64_to_hex requires input in str")
 
     if type(b64) is not bytes:

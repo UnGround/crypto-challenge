@@ -26,8 +26,9 @@ class TestDecrypt(unittest.TestCase):
         self.assertEqual(decryptor.analyze_char_freq('KAABCD?/DA'), {'A': 30, 'B': 10, 'C': 10, 'D': 20, 'K': 10, '?': 10, '/': 10})
 
     def test_score_char_freq(self):
-        self.assertEqual(decryptor.score_char_freq(decryptor.english_letter_frequencies), 0)
-        self.assertEqual(decryptor.score_char_freq({'/':1}), 1*10)
+        perfect_score = ''.join(key * int(value*100 * 10) for key, value in decryptor.english_letter_frequencies.items())
+        self.assertEqual(round(decryptor.score_char_freq(perfect_score),1), 0)
+        self.assertEqual(decryptor.score_char_freq('/'), 100*10)
 
     def test_search_single_byte_xor_key(self):
         key, message = decryptor.search_single_byte_xor_key('1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736')
@@ -79,6 +80,16 @@ I go crazy when I hear a cymbal"""
         key, text = decryptor.crack_vigenere(cyphertext)
         self.assertEqual(key, 'Terminator X: Bring the noise')
         f.close()
+
+    def test_decrypt_aes_ecb(self):
+        """test that decrypting AES in ECB works"""
+        f = open('../challenges/set1/1.7.txt')
+        ciphertext_b64 = f.read()
+        ciphertext = base64.b64decode(ciphertext_b64)
+        key = "YELLOW SUBMARINE"
+        plaintext_45 = bytes("I'm back and I'm ringin' the bell \nA rockin' ", 'UTF8')
+        self.assertEqual(plaintext_45, decryptor.decrypt_aes_ecb(ciphertext, key)[:45])
+        self.assertEqual(plaintext_45, decryptor.decrypt_aes_ecb(ciphertext_b64, key, True)[:45])
 
 
 if __name__ == "__main__":
